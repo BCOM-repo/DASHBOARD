@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Iniciar sesión</title>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+  <style>
+    body {
+      background-color: #580714;
+    }
+    .form-container {
+      background-color: #330b11;
+    }
+  </style>
+  <!-- Incluir SweetAlert2 -->
+  <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+</head>
+<body>
+  <div class="flex flex-col items-center justify-center min-h-screen p-4">
+    <div class="w-full max-w-md bg-white p-6 rounded-lg shadow-lg form-container">
+      <h2 class="text-2xl font-bold mb-6 text-white dark:text-white">Iniciar sesión</h2>
+      
+      <form id="loginForm" action="/login" method="POST">
+        <div class="mb-4">
+          <label for="username" class="block text-sm font-medium text-white dark:text-white">Usuario</label>
+          <input type="text" id="username" name="username" class="mt-1 block w-full p-3 border border-gray-300 rounded-lg bg-gray-100 text-gray-900 dark:bg-gray-800 dark:border-gray-600 dark:text-gray-100 focus:ring-primary-500 focus:border-primary-500" required>
+        </div>
+        
+        <div class="mb-6">
+          <label for="password" class="block text-sm font-medium text-white dark:text-white">Contraseña</label>
+          <input type="password" id="password" name="password" class="mt-1 block w-full p-3 border border-gray-300 rounded-lg bg-gray-100 text-gray-900 dark:bg-gray-800 dark:border-gray-600 dark:text-gray-100 focus:ring-primary-500 focus:border-primary-500" required>
+        </div>
+        
+        <div class="flex justify-end mb-4">
+          <button type="submit" class="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-500">Iniciar sesión</button>
+        </div>
+      </form>
+
+      <div class="text-center mt-8">
+        <p class="text-white mb-4">¿No tienes una cuenta?</p>
+        <a href="/register" class="inline-block px-6 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-500">
+          Registrarse
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    document.getElementById('loginForm').addEventListener('submit', async function(event) {
+      event.preventDefault();
+
+      // Capturar los datos del formulario
+      const formData = {
+        username: document.getElementById('username').value,
+        password: document.getElementById('password').value
+      };
+
+      // Verificar si los campos están vacíos
+      if (formData.username === '' || formData.password === '') {
+        Swal.fire({
+          icon: 'warning',
+          title: 'Campos vacíos',
+          text: 'Por favor, complete todos los campos.',
+          confirmButtonColor: '#d33'
+        });
+        return;
+      }
+
+      // Realiza la petición al servidor enviando JSON
+      const response = await fetch('/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json'
+        },
+        body: JSON.stringify(formData)
+      });
+
+      const result = await response.json();
+
+      // Mostrar mensaje basado en la respuesta
+      if (result.success) {
+        Swal.fire({
+          icon: 'success',
+          title: 'Inicio de sesión exitoso',
+          text: 'Serás redirigido en breve...',
+          confirmButtonColor: '#3085d6',
+          timer: 1500,
+          showConfirmButton: false
+        }).then(() => {
+          window.location.href = '/'; // Redireccionar a la página de inicio
+        });
+      } else {
+        Swal.fire({
+          icon: 'error',
+          title: 'Error de autenticación',
+          text: result.message || 'Las credenciales son incorrectas.',
+          confirmButtonColor: '#d33'
+        });
+      }
+    });
+
+    // Mensaje de error en caso de que lo provea el backend
+    const errorMessage = "<%= errorMessage %>"; // Lee el mensaje de error del backend si es necesario
+    if (errorMessage) {
+      Swal.fire({
+        icon: 'error',
+        title: 'Error de autenticación',
+        text: errorMessage,
+        confirmButtonColor: '#d33'
+      });
+    }
+  </script>
+</body>
+</html>

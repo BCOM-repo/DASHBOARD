@@ -1,0 +1,304 @@
+<!-- Main Content -->
+<div class="container mx-auto p-4">
+    <div class="flex justify-between items-center mb-4">
+        <h1 class="text-2xl font-semibold text-gray-900 dark:text-white">Lista de Canales</h1>
+        <button class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 dark:bg-blue-600 dark:hover:bg-blue-700" onclick="openAddDrawer()">Agregar Canal</button>
+    </div>
+
+        <!-- Contenedor con scroll horizontal -->
+        <div class="overflow-x-auto">
+            <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+                <thead style="background-color: #8f3542;">
+                    <tr>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-white dark:text-white uppercase tracking-wider">#</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-white dark:text-white uppercase tracking-wider">Nombre</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-white dark:text-white uppercase tracking-wider">Descripcion</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-white dark:text-white uppercase tracking-wider">No. Canal</th>   
+                        <th class="px-6 py-3 text-left text-xs font-medium text-white dark:text-white uppercase tracking-wider">StreamURL</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-white dark:text-white uppercase tracking-wider">Acciones</th>
+                    </tr>            
+                </thead>
+                <tbody id="channels-table-body" class="bg-white divide-y divide-gray-200 dark:bg-gray-800 dark:divide-gray-700" style="background-color: #8f3542;">
+                    <!-- Rows will be dynamically added here -->
+                </tbody>
+            </table>
+        </div>
+ 
+
+        <div class="flex justify-between items-center mt-4">
+            <button onclick="changePage(-1)" class="px-4 py-2 bg-gray-300 text-gray-800 rounded-lg hover:bg-gray-400 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600" id="prev-page" disabled>
+                Anterior
+            </button>
+            <span id="results-count" class="text-gray-900 dark:text-white"></span>
+            <button onclick="changePage(1)" class="px-4 py-2 bg-gray-300 text-gray-800 rounded-lg hover:bg-gray-400 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600" id="next-page">
+                Siguiente
+            </button>
+        </div>
+    </div>
+
+    <!-- Drawer for Adding Channel -->
+<div id="channel-add-drawer" class="fixed inset-0 z-50 overflow-y-auto bg-gray-900 bg-opacity-50 dark:bg-opacity-80 hidden">
+    <div class="relative w-full h-full max-w-lg p-4 mx-auto" style="background-color: #330b11;">
+        <button type="button" class="absolute top-2 right-2 text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 dark:hover:bg-gray-700 dark:hover:text-white" aria-label="Close" onclick="closeAddDrawer()">
+            <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                <path fill-rule="evenodd" d="M6.293 4.293a1 1 0 011.414 0L10 5.586l2.293-1.293a1 1 111.414 1.414L11.414 7l2.293 2.293a1 1 01-1.414 1.414L10 8.414l-2.293 2.293a1 1 01-1.414-1.414L8.586 7 6.293 4.707a1 1 0 010-1.414z" clip-rule="evenodd"></path>
+            </svg>
+        </button>
+        <h2 class="text-lg font-semibold text-gray-900 dark:text-white">Agregar Canal</h2>
+        <form id="add-channel-form" class="mt-4" enctype="multipart/form-data" onsubmit="return submitAddForm()">
+            <div class="mb-4">
+                <label for="new-channel-name" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Nombre</label>
+                <input type="text" id="new-channel-name" name="channelName" class="mt-1 block w-full p-2 border border-gray-300 rounded-lg dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500 focus:ring-primary-500 focus:border-primary-500" placeholder="Nombre del canal" required>
+            </div>
+            <div class="mb-4">
+                <label for="new-channel-description" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Descripcion</label>
+                <input type="text" id="new-channel-description" name="channel_description" class="mt-1 block w-full p-2 border border-gray-300 rounded-lg dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500 focus:ring-primary-500 focus:border-primary-500" placeholder="Descripcion del canal" required>
+            </div>
+            <div class="mb-4">
+                <label for="new-channel-number" class="block text-sm font-medium text-gray-700 dark:text-gray-300">No. Canal</label>
+                <input type="text" id="new-channel-number" name="channel_number" class="mt-1 block w-full p-2 border border-gray-300 rounded-lg dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500 focus:ring-primary-500 focus:border-primary-500" placeholder="Numero de canal" required>
+            </div>
+
+            <div class="mb-4">
+                <label for="new-channel-url" class="block text-sm font-medium text-gray-700 dark:text-gray-300">URL</label>
+                <input type="text" id="new-channel-url" name="channel_url" class="mt-1 block w-full p-2 border border-gray-300 rounded-lg dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500 focus:ring-primary-500 focus:border-primary-500" placeholder="URL de transimision del canal" required>
+            </div>
+
+
+            
+            <div class="flex justify-end">
+                <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 dark:bg-blue-600 dark:hover:bg-blue-700">Agregar</button>
+                <button type="button" class="ml-4 px-4 py-2 bg-gray-300 text-gray-800 rounded-lg hover:bg-gray-400 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600" onclick="closeAddDrawer()">Cancelar</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+
+<!-- Drawer for Updating Channel -->
+<div id="channel-update-drawer" class="fixed inset-0 z-50 overflow-y-auto bg-gray-900 bg-opacity-50 dark:bg-opacity-80 hidden">
+    <div class="relative w-full h-full max-w-lg p-4 mx-auto" style="background-color: #330b11;">
+        <button type="button" class="absolute top-2 right-2 text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 dark:hover:bg-gray-700 dark:hover:text-white" aria-label="Close" onclick="closeUpdateDrawer()">
+            <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                <path fill-rule="evenodd" d="M6.293 4.293a1 1 0 011.414 0L10 5.586l2.293-1.293a1 1 111.414 1.414L11.414 7l2.293 2.293a1 1 01-1.414 1.414L10 8.414l-2.293 2.293a1 1 01-1.414-1.414L8.586 7 6.293 4.707a1 1 0 010-1.414z" clip-rule="evenodd"></path>
+            </svg>
+        </button>
+        <h2 class="text-lg font-semibold text-gray-900 dark:text-white">Actualizar Canal</h2>
+        <form id="update-channel-form" class="mt-4">
+            <!-- Hidden field for the station ID -->
+            <input type="hidden" id="channel-id" name="id_channel">
+
+            <div class="mb-4">
+                <label for="channel-name" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Nombre</label>
+                <input type="text" id="channel-name" name="channelName" class="mt-1 block w-full p-2 border border-gray-300 rounded-lg dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500 focus:ring-primary-500 focus:border-primary-500" placeholder="Nombre del canal">
+            </div>
+            <div class="mb-4">
+                <label for="channel-description" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Descripcion</label>
+                <input type="text" id="channel-description" name="channel_description" class="mt-1 block w-full p-2 border border-gray-300 rounded-lg dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500 focus:ring-primary-500 focus:border-primary-500" placeholder="Descripcion del canal">
+            </div>
+            <div class="mb-4">
+                <label for="channel-number" class="block text-sm font-medium text-gray-700 dark:text-gray-300">No. Canal</label>
+                <input type="text" id="channel-number" name="channel_number" class="mt-1 block w-full p-2 border border-gray-300 rounded-lg dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500 focus:ring-primary-500 focus:border-primary-500" placeholder="Numero de canal">
+            </div>
+            <div class="mb-4">
+                <label for="channel-url" class="block text-sm font-medium text-gray-700 dark:text-gray-300">URL</label>
+                <input type="text" id="channel-url" name="channel_url" class="mt-1 block w-full p-2 border border-gray-300 rounded-lg dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500 focus:ring-primary-500 focus:border-primary-500" placeholder="URL de transimision del canal">
+            </div>
+            
+            <div class="flex justify-end">
+                <button type="button" class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 dark:bg-blue-600 dark:hover:bg-blue-700" onclick="submitUpdateForm()">Guardar Cambios</button>
+                <button type="button" class="ml-4 px-4 py-2 bg-gray-300 text-gray-800 rounded-lg hover:bg-gray-400 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600" onclick="closeUpdateDrawer()">Cancelar</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+let channels = JSON.parse('<%- JSON.stringify(channels) %>');
+let currentPage = 1;
+const itemsPerPage = 10;
+
+
+function loadTableData() {
+    const tableBody = document.getElementById('channels-table-body');
+    tableBody.innerHTML = ''; // Clear the table
+
+    const startIndex = (currentPage - 1) * itemsPerPage;
+    const endIndex = Math.min(startIndex + itemsPerPage, channels.length);
+
+    for (let i = startIndex; i < endIndex; i++) {
+        const channel = channels[i];
+        const row = document.createElement('tr');
+        row.innerHTML = `
+            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-white">${channel.id_channel}</td>
+            <td class="px-6 py-4 whitespace-nowrap text-sm text-white text-white">${channel.channel_name}</td>
+            <td class="px-6 py-4 whitespace-nowrap text-sm text-white text-white">${channel.channel_description}</td>
+            <td class="px-6 py-4 whitespace-nowrap text-sm text-white text-white">${channel.channel_number}</td>
+            <td class="px-6 py-4 whitespace-nowrap text-sm text-white text-white">${channel.channel_stream_url}</td>
+           
+            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium flex">
+                <button class="text-blue-600 hover:text-blue-900 dark:text-blue-500 dark:hover:text-blue-400 mr-2" onclick="openUpdateDrawer(${channel.id_channel})">Editar</button>
+                <button class="text-blue-600 hover:text-blue-900 dark:text-green-500 dark:hover:text-blue-400 mr-2" onclick="goToPrograms(${channel.id_channel},'${channel.channel_name}')">Programas</button>
+                <button class="text-red-600 hover:text-red-900 dark:text-red-500 dark:hover:text-red-400" onclick="confirmDeleteChannel(${channel.id_channel})">Eliminar</button>
+            </td>
+        `;
+        tableBody.appendChild(row);
+    }
+
+    // Update pagination controls
+    document.getElementById('prev-page').disabled = currentPage === 1;
+    document.getElementById('next-page').disabled = endIndex >= channels.length;
+    document.getElementById('results-count').innerText = `Mostrando ${startIndex + 1}-${Math.min(currentPage * itemsPerPage, channels.length)} de ${channels.length} resultados`;
+}
+
+function fetchChannels() {
+    fetch('http://localhost:3000/api/channels')
+        .then(response => response.json())
+        .then(data => {
+            const tableBody = document.getElementById('channels-table-body');
+            tableBody.innerHTML = ''; // Limpiar el contenido actual
+
+            data.forEach((channel, index) => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-white">${channel.id_channel}</td>
+            <td class="px-6 py-4 whitespace-nowrap text-sm text-white text-white">${channel.channel_name}</td>
+            <td class="px-6 py-4 whitespace-nowrap text-sm text-white text-white">${channel.channel_description}</td>
+            <td class="px-6 py-4 whitespace-nowrap text-sm text-white text-white">${channel.channel_number}</td>
+            <td class="px-6 py-4 whitespace-nowrap text-sm text-white text-white">${channel.channel_stream_url}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium flex">
+                        <button class="text-blue-600 hover:text-blue-900 dark:text-blue-500 dark:hover:text-blue-400 mr-2" onclick="openUpdateDrawer(${channel.id_channel})">Editar</button>
+                        <button class="text-blue-600 hover:text-blue-900 dark:text-green-500 dark:hover:text-blue-400 mr-2" onclick="goToPrograms(${channel.id_channel}, '${channel.channel_name}')">Programas</button>
+                        <button class="text-red-600 hover:text-red-900 dark:text-red-500 dark:hover:text-red-400" onclick="confirmDeleteChannel(${channel.id_channel})">Eliminar</button>
+            </td>
+                `;
+                console.log("TABLA ACTUALIZADA");
+                tableBody.appendChild(row);
+                channels = data;
+            });
+        })
+        .catch(error => console.error('Error fetching channels:', error));
+}
+
+
+function openUpdateDrawer(id) {
+    const channel = channels.find(s => s.id_channel === id);
+    console.log(channel);
+    document.getElementById('channel-id').value = id;
+    document.getElementById('channel-name').value = channel.channel_name;
+    document.getElementById('channel-description').value = channel.channel_description;
+    document.getElementById('channel-number').value = channel.channel_number;
+    document.getElementById('channel-url').value = channel.channel_stream_url;
+    document.getElementById('update-channel-form').dataset.id = id;
+    document.getElementById('channel-update-drawer').classList.remove('hidden');
+}
+
+
+
+function confirmDeleteChannel(id) {
+    if (confirm('¿Estás seguro de que deseas eliminar este canal?')) {
+        fetch(`http://localhost:3000/api/channels/${id}`, {
+            method: 'DELETE',
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Error al eliminar el canal');
+            }
+
+            loadTableData();
+            return response.json();
+        })
+        .then(data => {
+            console.log('Canal eliminado:', data);
+            // Aquí puedes agregar lógica para actualizar la interfaz, como eliminar la estación de la lista en la página
+            alert('Canal eliminado exitosamente.');
+            fetchChannels();
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('Ocurrió un error al eliminar la estación.');
+        });
+    }
+}
+
+function submitUpdateForm() {
+    const form = document.getElementById('update-channel-form');
+    const formData = new FormData(form); // Crea un objeto FormData con el formulario
+
+    fetch('http://localhost:3000/api/update-channels', {
+        method: 'POST',
+        body: formData, // Adjunta los datos del formulario incluyendo los archivos
+    })
+    .then(response => response.json())
+    .then(data => {
+        console.log('Success:', data);
+        // Maneja la respuesta del servidor (ej. muestra un mensaje de éxito o redirige)
+        closeUpdateDrawer(); // Cierra el formulario después de enviar
+        fetchChannels();
+
+    })
+    .catch((error) => {
+        console.error('Error:', error);
+        // Maneja el error (ej. muestra un mensaje de error)
+    });
+}
+
+function submitAddForm() {
+    const form = document.getElementById('add-channel-form');
+    const formData = new FormData(form); // Crea un objeto FormData con el formulario
+
+    fetch('http://localhost:3000/api/channels', {
+        method: 'POST',
+        body: formData, // Adjunta los datos del formulario incluyendo los archivos
+    })
+    .then(response => response.json())
+    .then(data => {
+        console.log('Success:', data);
+        // Maneja la respuesta del servidor (ej. muestra un mensaje de éxito o redirige)
+        closeAddDrawer(); // Cierra el formulario después de enviar
+        loadTableData();
+        fetchChannels();
+    })
+    .catch((error) => {
+        console.error('Error:', error);
+        // Maneja el error (ej. muestra un mensaje de error)
+    });
+
+    return false; // Evita el envío predeterminado del formulario
+}
+
+
+function goToPrograms(id_Channel, channelName) {
+    const encodedChannelName = encodeURIComponent(channelName); // Codifica el nombre para URLs
+    window.location.href = `/crud/${id_Channel}/programs?channelName=${encodedChannelName}`;
+}
+
+
+function openAddDrawer() {
+    document.getElementById('channel-add-drawer').classList.remove('hidden');
+}
+
+function closeAddDrawer() {
+    document.getElementById('channel-add-drawer').classList.add('hidden');
+}
+
+function closeUpdateDrawer(){
+    document.getElementById('channel-update-drawer').classList.add('hidden');
+
+}
+
+function deleteChannel(id) {
+    channels = channels.filter(s => s.id_channel !== id);
+}
+
+function changePage(direction) {
+    currentPage += direction;
+    loadTableData();    
+}
+
+// Initial load
+loadTableData();
+
+
+
+</script>

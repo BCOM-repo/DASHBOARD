@@ -1,0 +1,303 @@
+<!-- Main Content -->
+<div class="container mx-auto p-4">
+    <div class="flex justify-between items-center mb-4">
+        <h1 class="text-2xl font-semibold text-gray-900 dark:text-white">Lista de Estaciones</h1>
+        <button class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 dark:bg-blue-600 dark:hover:bg-blue-700" onclick="openAddDrawer()">Agregar Estación</button>
+    </div>
+    <!-- Contenedor con scroll horizontal -->
+    <div class="overflow-x-auto">
+        <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+            <thead style="background-color: #8f3542;">
+                <tr>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-white dark:text-white uppercase tracking-wider">#</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-white dark:text-white uppercase tracking-wider">Nombre</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-white dark:text-white uppercase tracking-wider">Frecuencia</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-white dark:text-white uppercase tracking-wider">URL Del Stream</th>   
+                    <th class="px-6 py-3 text-left text-xs font-medium text-white dark:text-white uppercase tracking-wider">Logo</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-white dark:text-white uppercase tracking-wider">Acciones</th>
+                </tr>            
+            </thead>
+            <tbody id="stations-table-body" class="bg-white divide-y divide-gray-200 dark:bg-gray-800 dark:divide-gray-700" style="background-color: #8f3542;">
+                <!-- Rows will be dynamically added here -->
+            </tbody>
+        </table>
+    </div>
+    <div class="flex justify-between items-center mt-4">
+        <button onclick="changePage(-1)" class="px-4 py-2 bg-gray-300 text-gray-800 rounded-lg hover:bg-gray-400 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600" id="prev-page" disabled>
+            Anterior
+        </button>
+        <span id="results-count" class="text-gray-900 dark:text-white"></span>
+        <button onclick="changePage(1)" class="px-4 py-2 bg-gray-300 text-gray-800 rounded-lg hover:bg-gray-400 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600" id="next-page">
+            Siguiente
+        </button>
+    </div>
+</div>
+
+<!-- Drawer for Adding Station -->
+<div id="station-add-drawer" class="fixed inset-0 z-50 overflow-y-auto bg-gray-900 bg-opacity-50 dark:bg-opacity-80 hidden">
+    <div class="relative w-full h-full max-w-lg p-4 mx-auto" style="background-color: #330b11;">
+        <button type="button" class="absolute top-2 right-2 text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 dark:hover:bg-gray-700 dark:hover:text-white" aria-label="Close" onclick="closeAddDrawer()">
+            <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                <path fill-rule="evenodd" d="M6.293 4.293a1 1 0 011.414 0L10 5.586l2.293-1.293a1 1 111.414 1.414L11.414 7l2.293 2.293a1 1 01-1.414 1.414L10 8.414l-2.293 2.293a1 1 01-1.414-1.414L8.586 7 6.293 4.707a1 1 0 010-1.414z" clip-rule="evenodd"></path>
+            </svg>
+        </button>
+        <h2 class="text-lg font-semibold text-gray-900 dark:text-white">Agregar Estación</h2>
+        <form id="add-station-form" class="mt-4" enctype="multipart/form-data" onsubmit="return submitAddForm()">
+            <div class="mb-4">
+                <label for="new-station-name" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Nombre</label>
+                <input type="text" id="new-station-name" name="name" class="mt-1 block w-full p-2 border border-gray-300 rounded-lg dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500 focus:ring-primary-500 focus:border-primary-500" placeholder="Nombre de la estación" required>
+            </div>
+            <div class="mb-4">
+                <label for="new-station-frequency" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Frecuencia</label>
+                <input type="text" id="new-station-frequency" name="frequency" class="mt-1 block w-full p-2 border border-gray-300 rounded-lg dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500 focus:ring-primary-500 focus:border-primary-500" placeholder="Frecuencia de la estación" required>
+            </div>
+            <div class="mb-4">
+                <label for="new-station-stream-url" class="block text-sm font-medium text-gray-700 dark:text-gray-300">URL de Stream</label>
+                <input type="text" id="new-station-stream-url" name="streamURL" class="mt-1 block w-full p-2 border border-gray-300 rounded-lg dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500 focus:ring-primary-500 focus:border-primary-500" placeholder="URL de Stream de la estación" required>
+            </div>
+            <div class="mb-4">
+                <label for="new-station-logo" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Subir Logo</label>
+                <input type="file" id="new-station-logo" name="logo" class="mt-1 block w-full text-gray-700 border border-gray-300 rounded-lg dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500 focus:ring-primary-500 focus:border-primary-500" accept="image/*" required>
+            </div>
+            <div class="mb-4">
+                <label for="new-station-background" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Subir Imagen de Fondo</label>
+                <input type="file" id="new-station-background" name="background" class="mt-1 block w-full text-gray-700 border border-gray-300 rounded-lg dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500 focus:ring-primary-500 focus:border-primary-500" accept="image/*" required>
+            </div>
+            <div class="flex justify-end">
+                <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 dark:bg-blue-600 dark:hover:bg-blue-700">Agregar</button>
+                <button type="button" class="ml-4 px-4 py-2 bg-gray-300 text-gray-800 rounded-lg hover:bg-gray-400 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600" onclick="closeAddDrawer()">Cancelar</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Drawer for Updating Station -->
+<div id="station-update-drawer" class="fixed inset-0 z-50 overflow-y-auto bg-gray-900 bg-opacity-50 dark:bg-opacity-80 hidden">
+    <div class="relative w-full h-full max-w-lg p-4 mx-auto" style="background-color: #330b11;">
+        <button type="button" class="absolute top-2 right-2 text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 dark:hover:bg-gray-700 dark:hover:text-white" aria-label="Close" onclick="closeUpdateDrawer()">
+            <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                <path fill-rule="evenodd" d="M6.293 4.293a1 1 0 011.414 0L10 5.586l2.293-1.293a1 1 111.414 1.414L11.414 7l2.293 2.293a1 1 01-1.414 1.414L10 8.414l-2.293 2.293a1 1 01-1.414-1.414L8.586 7 6.293 4.707a1 1 0 010-1.414z" clip-rule="evenodd"></path>
+            </svg>
+        </button>
+        <h2 class="text-lg font-semibold text-gray-900 dark:text-white">Actualizar Estación</h2>
+        <form id="update-station-form" class="mt-4">
+            <!-- Hidden field for the station ID -->
+            <input type="hidden" id="station-id" name="id">
+
+            <div class="mb-4">
+                <label for="station-name" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Nombre</label>
+                <input type="text" id="station-name" name="name" class="mt-1 block w-full p-2 border border-gray-300 rounded-lg dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500 focus:ring-primary-500 focus:border-primary-500" placeholder="Nombre de la estación">
+            </div>
+            <div class="mb-4">
+                <label for="station-frequency" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Frecuencia</label>
+                <input type="text" id="station-frequency" name="frequency" class="mt-1 block w-full p-2 border border-gray-300 rounded-lg dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500 focus:ring-primary-500 focus:border-primary-500" placeholder="Frecuencia de la estación">
+            </div>
+            <div class="mb-4">
+                <label for="station-stream-url" class="block text-sm font-medium text-gray-700 dark:text-gray-300">URL de Stream</label>
+                <input type="text" id="station-stream-url" name="streamURL" class="mt-1 block w-full p-2 border border-gray-300 rounded-lg dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500 focus:ring-primary-500 focus:border-primary-500" placeholder="URL de Stream de la estación">
+            </div>
+            <div class="mb-4">
+                <label for="station-logo" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Logo URL</label>
+                <input type="file" id="station-logo" name="logoUrl" class="mt-1 block w-full text-gray-700 border border-gray-300 rounded-lg dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500 focus:ring-primary-500 focus:border-primary-500">
+            </div>
+            <div class="mb-4">
+                <label for="station-background" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Background Image</label>
+                <input type="file" id="station-background" name="backgroundImage" class="mt-1 block w-full text-gray-700 border border-gray-300 rounded-lg dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500 focus:ring-primary-500 focus:border-primary-500">
+            </div>
+            <div class="flex justify-end">
+                <button type="button" class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 dark:bg-blue-600 dark:hover:bg-blue-700" onclick="submitUpdateForm()">Guardar Cambios</button>
+                <button type="button" class="ml-4 px-4 py-2 bg-gray-300 text-gray-800 rounded-lg hover:bg-gray-400 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600" onclick="closeUpdateDrawer()">Cancelar</button>
+            </div>
+        </form>
+
+    </div>
+</div>
+
+
+
+
+<script>
+// Data and state
+let stations = JSON.parse('<%- JSON.stringify(stations) %>');
+let currentPage = 1;
+const itemsPerPage = 10;
+
+function loadTableData() {
+    const tableBody = document.getElementById('stations-table-body');
+    tableBody.innerHTML = ''; // Clear the table
+
+    const startIndex = (currentPage - 1) * itemsPerPage;
+    const endIndex = Math.min(startIndex + itemsPerPage, stations.length);
+
+    for (let i = startIndex; i < endIndex; i++) {
+        const station = stations[i];
+        const row = document.createElement('tr');
+        row.innerHTML = `
+            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-white">${station.id_station}</td>
+            <td class="px-6 py-4 whitespace-nowrap text-sm text-white text-white">${station.nombreStation}</td>
+            <td class="px-6 py-4 whitespace-nowrap text-sm text-white text-white">${station.Frequency}</td>
+            <td class="px-6 py-4 whitespace-nowrap text-sm text-white text-white">${station.StreamURL}</td>
+            <td class="px-6 py-4 whitespace-nowrap text-sm text-white text-white">
+                <img src="http://localhost:3000/${station.LogoURL}" alt="${station.nombreStation} Logo" style="max-width: 100px">
+            </td>
+            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium flex">
+                <button class="text-blue-600 hover:text-blue-900 dark:text-blue-500 dark:hover:text-blue-400 mr-2" onclick="openUpdateDrawer(${station.id_station})">Editar</button>
+               <button class="text-blue-600 hover:text-blue-900 dark:text-green-500 dark:hover:text-blue-400 mr-2" onclick="goToPrograms(${station.id_station},'${station.nombreStation}')">Programas</button> 
+                <button class="text-red-600 hover:text-red-900 dark:text-red-500 dark:hover:text-red-400" onclick="confirmDeleteStation(${station.id_station})">Eliminar</button>
+            </td>
+        `;
+        tableBody.appendChild(row);
+    }
+
+    // Update pagination controls
+    document.getElementById('prev-page').disabled = currentPage === 1;
+    document.getElementById('next-page').disabled = endIndex >= stations.length;
+    document.getElementById('results-count').innerText = `Mostrando ${startIndex + 1}-${Math.min(currentPage * itemsPerPage, stations.length)} de ${stations.length} resultados`;
+}
+
+function fetchStations() {
+    fetch('http://localhost:3000/api/stations')
+        .then(response => response.json())
+        .then(data => {
+            const tableBody = document.getElementById('stations-table-body');
+            tableBody.innerHTML = ''; // Limpiar el contenido actual
+
+            data.forEach((station, index) => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-white">${station.id_station}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-white text-white">${station.nombreStation}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-white text-white">${station.Frequency}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-white text-white">${station.StreamURL}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-white text-white">
+                        <img src="http://localhost:3000/${station.LogoURL}" alt="${station.name} Logo" style="max-width: 100px">
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium flex">
+                        <button class="text-blue-600 hover:text-blue-900 dark:text-blue-500 dark:hover:text-blue-400 mr-2" onclick="openUpdateDrawer(${station.id_station})">Editar</button>
+                         <button class="text-blue-600 hover:text-blue-900 dark:text-green-500 dark:hover:text-blue-400 mr-2" onclick="goToPrograms(${station.id_station},'${station.nombreStation}')">Programas</button> 
+                        <button class="text-red-600 hover:text-red-900 dark:text-red-500 dark:hover:text-red-400" onclick="confirmDeleteStation(${station.id_station})">Eliminar</button>
+                    </td>
+                `;
+                console.log("TABLA ACTUALIZADA");
+                tableBody.appendChild(row);
+                stations = data;
+            });
+        })
+        .catch(error => console.error('Error fetching stations:', error));
+}
+
+function openAddDrawer() {
+    document.getElementById('station-add-drawer').classList.remove('hidden');
+}
+
+function closeAddDrawer() {
+    document.getElementById('station-add-drawer').classList.add('hidden');
+}
+
+function submitAddForm() {
+    const form = document.getElementById('add-station-form');
+    const formData = new FormData(form); // Crea un objeto FormData con el formulario
+
+    fetch('http://localhost:3000/api/stations', {
+        method: 'POST',
+        body: formData, // Adjunta los datos del formulario incluyendo los archivos
+    })
+    .then(response => response.json())
+    .then(data => {
+        console.log('Success:', data);
+        // Maneja la respuesta del servidor (ej. muestra un mensaje de éxito o redirige)
+        closeAddDrawer(); // Cierra el formulario después de enviar
+        loadTableData();
+        fetchStations();
+    })
+    .catch((error) => {
+        console.error('Error:', error);
+        // Maneja el error (ej. muestra un mensaje de error)
+    });
+
+    return false; // Evita el envío predeterminado del formulario
+}
+
+
+function openUpdateDrawer(id) {
+    const station = stations.find(s => s.id_station === id);
+    console.log(station);
+    document.getElementById('station-id').value = id;
+    document.getElementById('station-name').value = station.nombreStation;
+    document.getElementById('station-frequency').value = station.Frequency;
+    document.getElementById('station-stream-url').value = station.StreamURL;
+    document.getElementById('update-station-form').dataset.id = id;
+    document.getElementById('station-update-drawer').classList.remove('hidden');
+}
+
+function closeUpdateDrawer() {
+    document.getElementById('station-update-drawer').classList.add('hidden');
+}
+
+function submitUpdateForm() {
+    const form = document.getElementById('update-station-form');
+    const formData = new FormData(form); // Crea un objeto FormData con el formulario
+
+    fetch('http://localhost:3000/api/stations/update', {
+        method: 'POST',
+        body: formData, // Adjunta los datos del formulario incluyendo los archivos
+    })
+    .then(response => response.json())
+    .then(data => {
+        console.log('Success:', data);
+        // Maneja la respuesta del servidor (ej. muestra un mensaje de éxito o redirige)
+        closeUpdateDrawer(); // Cierra el formulario después de enviar
+        fetchStations();
+
+    })
+    .catch((error) => {
+        console.error('Error:', error);
+        // Maneja el error (ej. muestra un mensaje de error)
+    });
+}
+
+function confirmDeleteStation(id) {
+    if (confirm('¿Estás seguro de que deseas eliminar esta estación?')) {
+        fetch(`http://localhost:3000/api/stations/${id}`, {
+            method: 'DELETE',
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Error al eliminar la estación');
+            }
+
+            loadTableData();
+            return response.json();
+        })
+        .then(data => {
+            console.log('Estación eliminada:', data);
+            // Aquí puedes agregar lógica para actualizar la interfaz, como eliminar la estación de la lista en la página
+            alert('Estación eliminada exitosamente.');
+            fetchStations();
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('Ocurrió un error al eliminar la estación.');
+        });
+    }
+}
+
+function goToPrograms(id_station,nombreStation){
+    const encodednombreStation = encodeURIComponent(nombreStation); // Codifica el nombre para URLs
+    window.location.href = `${id_station}/programs-stations?nombreStation=${encodednombreStation}`;
+
+}
+
+function deleteStation(id) {
+    stations = stations.filter(s => s.id_station !== id);
+}
+
+function changePage(direction) {
+    currentPage += direction;
+    loadTableData();
+}
+
+// Initial load
+loadTableData();
+</script>
+

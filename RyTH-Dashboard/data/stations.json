@@ -1,0 +1,27 @@
+[
+    {
+      "id": 1,
+      "name": "Radio One",
+      "frequency": "101.1 FM",
+      "urlStream": "http://stream.radioone.com/stream",
+      "urlLogo": "http://example.com/images/radioone_logo.png",
+      "backgroundUrl": "http://example.com/images/radioone_background.jpg"
+    },
+    {
+      "id": 2,
+      "name": "Cool Radio",
+      "frequency": "102.5 FM",
+      "urlStream": "http://stream.coolradio.com/stream",
+      "urlLogo": "http://example.com/images/coolradio_logo.png",
+      "backgroundUrl": "http://example.com/images/coolradio_background.jpg"
+    },
+    {
+      "id": 3,
+      "name": "Jazz Vibes",
+      "frequency": "103.9 FM",
+      "urlStream": "http://stream.jazzvibes.com/stream",
+      "urlLogo": "http://example.com/images/jazzvibes_logo.png",
+      "backgroundUrl": "http://example.com/images/jazzvibes_background.jpg"
+    }
+  ]
+  

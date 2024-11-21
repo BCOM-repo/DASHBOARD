@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+  <head>
+    <%- include('./partials/header.ejs') %>
+  </head>
+  <body style="background-color:#580714">
+    <%- include('./partials/navbar-dashboard.ejs') %>
+
+    <div class="flex pt-16 overflow-hidden bg-gray-50 dark:bg-gray-900">
+      <%- include('./partials/sidebar.ejs') %>
+
+      <div id="main-content" class="relative w-full h-full overflow-y-auto lg:ml-64" style="background-color: #330b11;">
+        <main>
+          <%- body %>
+        </main>
+
+        <% if (locals.footer && locals.footer === true) { %>
+          <%- include('./partials/footer.ejs') %>
+        <% } %>
+        
+      </div>
+    </div>
+
+    <%- include('./partials/scripts.ejs') %>
+  </body>
+</html>

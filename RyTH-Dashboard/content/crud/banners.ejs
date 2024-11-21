@@ -1,0 +1,344 @@
+<!-- Main Content -->
+<div class="container mx-auto p-4">
+    <div class="flex justify-between items-center mb-4">
+        <h1 class="text-2xl font-semibold text-gray-900 dark:text-white">Lista de Banners</h1>
+        <button class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 dark:bg-blue-600 dark:hover:bg-blue-700" onclick="openAddDrawer()">Agregar Banner</button>
+    </div>
+    <div class="overflow-x-auto">
+        <table class="min-w-full">
+            <thead style="background-color: #8f3542;">
+                <tr>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-white dark:text-white uppercase tracking-wider">#</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-white dark:text-white uppercase tracking-wider">Estación</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-white dark:text-white uppercase tracking-wider">Link</th>   
+                    <th class="px-6 py-3 text-left text-xs font-medium text-white dark:text-white uppercase tracking-wider">Logo</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-white dark:text-white uppercase tracking-wider">Fecha Fin</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-white dark:text-white uppercase tracking-wider">Acciones</th>
+                </tr>
+            </thead>
+            <tbody id="banners-table-body" style="background-color: #8f3542;">
+                <!-- Rows will be dynamically added here -->
+            </tbody>
+        </table>
+    </div>
+    <div class="flex justify-between items-center mt-4">
+        <button onclick="changePage(-1)" class="px-4 py-2 bg-gray-300 text-gray-800 rounded-lg hover:bg-gray-400 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600" id="prev-page" disabled>
+            Anterior
+        </button>
+        <span id="results-count" class="text-gray-900 dark:text-white"></span>
+        <button onclick="changePage(1)" class="px-4 py-2 bg-gray-300 text-gray-800 rounded-lg hover:bg-gray-400 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600" id="next-page">
+            Siguiente
+        </button>
+    </div>
+</div>
+
+<!-- Drawer for Adding Banner -->
+<div id="banner-add-drawer" class="fixed inset-0 z-50 overflow-y-auto bg-gray-900 bg-opacity-50 dark:bg-opacity-80 hidden">
+    <div class="relative w-full h-full max-w-lg p-4 mx-auto mt-16" style="background-color: #330b11;">
+        <button type="button" class="absolute top-2 right-2 text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 dark:hover:bg-gray-700 dark:hover:text-white" aria-label="Close" onclick="closeAddDrawer()">
+            <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                <path fill-rule="evenodd" d="M6.293 4.293a1 1 0 011.414 0L10 5.586l2.293-1.293a1 1 111.414 1.414L11.414 7l2.293 2.293a1 1 01-1.414 1.414L10 8.414l-2.293 2.293a1 1 01-1.414-1.414L8.586 7 6.293 4.707a1 1 0 010-1.414z" clip-rule="evenodd"></path>
+            </svg>
+        </button>
+        <h2 class="text-lg font-semibold text-gray-900 dark:text-white">Agregar Banner</h2>
+        <form id="add-banner-form" class="mt-4" enctype="multipart/form-data" onsubmit="return submitAddForm()">
+            <div class="mb-4">
+                <label for="new-station-dropdown" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Estación</label>
+                <select id="new-station-dropdown" name="id_station" class="mt-1 block w-full p-2 border border-gray-300 rounded-lg bg-gray-100 text-gray-900 focus:ring-primary-500 focus:border-primary-500" required>
+                    <option value="">Selecciona una estación</option>
+                </select>
+            </div>
+            <div class="mb-4">
+                <label for="new-banner-image-url" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Subir Imagen</label>
+                <input type="file" id="new-banner-image-url" name="ImageURL" class="mt-1 block w-full p-2 border border-gray-300 rounded-lg bg-gray-100 text-gray-900 focus:ring-primary-500 focus:border-primary-500" accept="image/*" required>
+            </div>
+            <div class="mb-4">
+                <label for="new-banner-link" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Enlace</label>
+                <input type="url" id="new-banner-link" name="link" class="mt-1 block w-full p-2 border border-gray-300 rounded-lg bg-gray-100 text-gray-900 focus:ring-primary-500 focus:border-primary-500" placeholder="Enlace del banner" required>
+            </div>
+            <div class="mb-4">
+                <label for="new-banner-date" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Fecha del Banner</label>
+                <input type="date" id="new-banner-date" name="banner_date" class="mt-1 block w-full p-2 border border-gray-300 rounded-lg bg-gray-100 text-gray-900 focus:ring-primary-500 focus:border-primary-500" required>
+            </div>
+            <div class="flex justify-end">
+                <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 dark:bg-blue-600 dark:hover:bg-blue-700">Agregar</button>
+                <button type="button" class="ml-4 px-4 py-2 bg-gray-300 text-gray-800 rounded-lg hover:bg-gray-400 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600" onclick="closeAddDrawer()">Cancelar</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Drawer for Updating Banner -->
+<div id="banner-update-drawer" class="fixed inset-0 z-50 overflow-y-auto bg-gray-900 bg-opacity-50 dark:bg-opacity-80 hidden">
+    <div class="relative w-full h-full max-w-lg p-4 mx-auto mt-16" style="background-color: #330b11;">
+        <button type="button" class="absolute top-2 right-2 text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 dark:hover:bg-gray-700 dark:hover:text-white" aria-label="Close" onclick="closeUpdateDrawer()">
+            <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                <path fill-rule="evenodd" d="M6.293 4.293a1 1 0 011.414 0L10 5.586l2.293-1.293a1 1 111.414 1.414L11.414 7l2.293 2.293a1 1 01-1.414 1.414L10 8.414l-2.293 2.293a1 1 01-1.414-1.414L8.586 7 6.293 4.707a1 1 0 010-1.414z" clip-rule="evenodd"></path>
+            </svg>
+        </button>
+        <h2 class="text-lg font-semibold text-gray-900 dark:text-white">Actualizar Banner</h2>
+        <form id="update-banner-form" class="mt-4" onsubmit="return submitUpdateForm()" enctype="multipart/form-data">
+            <input type="hidden" id="banner-id" name="id">
+
+            <div class="mb-4">
+                <label for="station-select" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Seleccionar Estación</label>
+                <select id="station-select" name="id_station" class="mt-1 block w-full p-2 border border-gray-300 rounded-lg bg-gray-100 text-gray-900 focus:ring-primary-500 focus:border-primary-500">
+                    <option value="" disabled selected>Seleccione una estación</option>
+                </select>
+            </div>
+            <div class="mb-4">
+                <label for="banner-link" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Link</label>
+                <input type="text" id="banner-link" name="link" class="mt-1 block w-full p-2 border border-gray-300 rounded-lg bg-gray-100 text-gray-900 focus:ring-primary-500 focus:border-primary-500">
+            </div>
+            <div class="mb-4">
+                <label for="banner-image" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Logo</label>
+                <input type="file" id="banner-image" name="ImageURL" class="mt-1 block w-full p-2 border border-gray-300 rounded-lg bg-gray-100 text-gray-900 focus:ring-primary-500 focus:border-primary-500" accept="image/*">
+            </div>
+            <div class="mb-4">
+                <label for="banner-date" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Fecha de Finalización</label>
+                <input type="date" id="banner-date" name="banner_date" class="mt-1 block w-full p-2 border border-gray-300 rounded-lg bg-gray-100 text-gray-900 focus:ring-primary-500 focus:border-primary-500">
+            </div>
+            <div class="flex justify-end">
+                <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 dark:bg-blue-600 dark:hover:bg-blue-700">Actualizar</button>
+                <button type="button" class="ml-4 px-4 py-2 bg-gray-300 text-gray-800 rounded-lg hover:bg-gray-400 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600" onclick="closeUpdateDrawer()">Cancelar</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+// Data and state
+let banners = JSON.parse('<%- JSON.stringify(banners) %>');
+let currentPage = 1;
+const itemsPerPage = 10;
+
+function formatDate(dateString) {
+    const date = new Date(dateString);
+    const day = String(date.getDate()).padStart(2, '0');
+    const month = String(date.getMonth() + 1).padStart(2, '0'); // Los meses en JavaScript son 0-indexados
+    const year = date.getFullYear();
+
+    return `${day}-${month}-${year}`;
+} 
+
+function loadTableData() {
+    const tableBody = document.getElementById('banners-table-body');
+    tableBody.innerHTML = ''; // Clear the table
+
+    const startIndex = (currentPage - 1) * itemsPerPage;
+    const endIndex = Math.min(startIndex + itemsPerPage, banners.length);
+
+    for (let i = startIndex; i < endIndex; i++) {
+        const banner = banners[i];
+        const formattedDate = formatDate(banner.banner_date); // Formatea la fecha
+        const row = document.createElement('tr');
+        row.innerHTML = `
+            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-white">${banner.id_banner}</td>
+            <td class="px-6 py-4 whitespace-nowrap text-sm text-white text-white">${banner.station_name}</td>
+            <td class="px-6 py-4 whitespace-nowrap text-sm text-white text-white">${banner.Link}</td>
+            <td class="px-6 py-4 whitespace-nowrap text-sm text-white text-white">
+                <img src="http://localhost:3000/${banner.ImageURL}" alt="${banner.station_name} Logo" style="width: 50px; height: 50px; object-fit: cover;">
+            </td>
+            <td class="px-6 py-4 whitespace-nowrap text-sm text-white text-white">${formattedDate}</td> <!-- Fecha formateada -->
+            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium flex">
+                <button class="text-blue-600 hover:text-blue-900 dark:text-blue-500 dark:hover:text-blue-400 mr-2" onclick="openUpdateDrawer(${banner.id_banner})">Editar</button>
+                <button class="text-red-600 hover:text-red-900 dark:text-red-500 dark:hover:text-red-400" onclick="confirmDeleteBanner(${banner.id_banner})">Eliminar</button>
+            </td>
+        `;
+        tableBody.appendChild(row);
+    }
+
+    // Update pagination controls
+    document.getElementById('prev-page').disabled = currentPage === 1;
+    document.getElementById('next-page').disabled = endIndex >= banners.length;
+    document.getElementById('results-count').innerText = `Mostrando ${startIndex + 1}-${Math.min(currentPage * itemsPerPage, banners.length)} de ${banners.length} resultados`;
+}
+
+function fetchBanners() {
+    fetch('http://localhost:3000/api/banners')
+        .then(response => response.json())
+        .then(data => {
+            const tableBody = document.getElementById('banners-table-body');
+            tableBody.innerHTML = ''; // Limpiar el contenido actual
+
+            data.forEach((banner, index) => {
+                const formattedDate = formatDate(banner.banner_date); // Formatea la fecha
+
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-white">${banner.id_banner}</td>
+                <td class="px-6 py-4 whitespace-nowrap text-sm text-white text-white">${banner.station_name}</td>
+                <td class="px-6 py-4 whitespace-nowrap text-sm text-white text-white">${banner.Link}</td>
+                <td class="px-6 py-4 whitespace-nowrap text-sm text-white text-white">
+                    <img src="http://localhost:3000/${banner.ImageURL}" alt="${banner.station_name} Logo" style="width: 50px; height: 50px; object-fit: cover;">
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap text-sm text-white text-white">${formattedDate}</td> <!-- Fecha formateada -->
+                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium flex">
+                    <button class="text-blue-600 hover:text-blue-900 dark:text-blue-500 dark:hover:text-blue-400 mr-2" onclick="openUpdateDrawer(${banner.id_banner})">Editar</button>
+                    <button class="text-red-600 hover:text-red-900 dark:text-red-500 dark:hover:text-red-400" onclick="confirmDeleteBanner(${banner.id_banner})">Eliminar</button>
+                </td>
+                `;
+                tableBody.appendChild(row);
+            });
+
+            banners = data; // Actualiza la lista de banners
+        })
+        .catch(error => console.error('Error fetching banners:', error));
+}
+
+function openAddDrawer() {
+    document.getElementById('banner-add-drawer').classList.remove('hidden');
+}
+
+function closeAddDrawer() {
+    document.getElementById('banner-add-drawer').classList.add('hidden');
+}
+
+function submitAddForm() {
+    const form = document.getElementById('add-banner-form');
+    const formData = new FormData(form); // Crea un objeto FormData con el formulario
+    console.log(form);
+    fetch('http://localhost:3000/api/banners', {
+        method: 'POST',
+        body: formData, // Adjunta los datos del formulario incluyendo los archivos
+    })
+    .then(response => response.json())
+    .then(data => {
+        console.log('Success:', data);
+        // Maneja la respuesta del servidor (ej. muestra un mensaje de éxito o redirige)
+        closeAddDrawer(); // Cierra el formulario después de enviar
+        loadTableData();
+        fetchBanners();
+    })
+    .catch((error) => {
+        console.error('Error:', error);
+        // Maneja el error (ej. muestra un mensaje de error)
+    });
+
+    return false; // Evita el envío predeterminado del formulario
+}
+
+
+function openUpdateDrawer(id) {
+    const banner = banners.find(s => s.id_banner === id);
+    console.log(banner);
+
+    fetch('http://localhost:3000/api/stations')
+        .then(response => response.json())
+        .then(stations => {
+            const select = document.getElementById('station-select');
+            select.innerHTML = '<option value="" disabled>Seleccione una estación</option>'; // Limpiar el dropdown
+
+            stations.forEach(station => {
+                const option = document.createElement('option');
+                option.value = station.id_station;
+                option.textContent = station.nombreStation;
+                if (station.id_station === banner.id_station) {
+                    option.selected = true; // Selecciona la estación asociada al banner
+                }
+                select.appendChild(option);
+            });
+        })
+        .catch(error => console.error('Error fetching stations:', error));
+    
+        // Crear un objeto Date a partir de la fecha ISO
+    const date = new Date(banner.banner_date);
+
+    // Formatear la fecha en "YYYY-MM-DD"
+    const formattedDate = date.toISOString().split('T')[0];
+
+    document.getElementById('banner-id').value = id;
+    document.getElementById('banner-link').value = banner.Link;
+    document.getElementById('banner-date').value = formattedDate;
+    console.log(document.getElementById('banner-date').value);
+    document.getElementById('update-banner-form').dataset.id = id;
+    document.getElementById('banner-update-drawer').classList.remove('hidden');
+}
+
+function closeUpdateDrawer() {
+    document.getElementById('banner-update-drawer').classList.add('hidden');
+}
+
+function submitUpdateForm() {
+    // Obtén el formulario y crea el FormData
+    const form = document.getElementById('update-banner-form');
+    const formData = new FormData(form); // Crea un objeto FormData con el formulario
+    event.preventDefault();
+
+    // Enviar los datos mediante fetch
+    fetch('http://localhost:3000/api/banners/update', {
+        method: 'POST', // Cambia a PUT si es necesario para actualizaciones
+        body: formData, // Adjunta los datos del formulario, incluyendo archivos
+    })
+    .then(response => response.json()) // Convierte la respuesta a JSON
+    .then(data => {
+        console.log('Success:', data);
+        // Si la respuesta del servidor es exitosa
+        if (data.success) {
+            closeUpdateDrawer(); // Cierra el drawer de actualización
+            fetchBanners(); // Actualiza la tabla de banners con la nueva información
+        } else {
+            // Muestra un mensaje de error si algo salió mal
+            console.error('Error:', data.message);
+        }
+    })
+    .catch((error) => {
+        console.error('Error:', error);
+        // Maneja el error (ej. muestra un mensaje de error)
+    });
+}
+
+function confirmDeleteBanner(id) {
+    if (confirm('¿Estás seguro de que deseas eliminar este banner?')) {
+        fetch(`http://localhost:3000/api/banners/${id}`, {
+            method: 'DELETE',
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Error al eliminar el banner');
+            }
+
+            loadTableData();
+            return response.json();
+        })
+        .then(data => {
+            console.log('Banner eliminada:', data);
+            // Aquí puedes agregar lógica para actualizar la interfaz, como eliminar la estación de la lista en la página
+            alert('Banner Eliminado exitosamente.');
+            fetchBanners();
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('Ocurrió un error al eliminar la estación.');
+        });
+    }
+}
+
+function deleteBanner(id) {
+    banners = banners.filter(s => s.id_banner !== id);
+}
+
+function changePage(direction) {
+    currentPage += direction;
+    loadTableData();
+}
+
+function fetchStations() {
+        fetch('http://localhost:3000/api/stations')
+            .then(response => response.json())
+            .then(data => {
+                const dropdown = document.getElementById('new-station-dropdown');
+                data.forEach(station => {
+                    const option = document.createElement('option');
+                    option.value = station.id_station;
+                    option.text = station.nombreStation;
+                    dropdown.appendChild(option);
+                });
+            })
+            .catch(error => console.error('Error fetching stations:', error));
+    }
+// Initial load
+loadTableData();
+fetchStations();
+
+</script>
