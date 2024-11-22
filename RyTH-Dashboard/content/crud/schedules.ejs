@@ -210,7 +210,7 @@ function submitAddForm() {
     const form = document.getElementById('add-schedule-form');
     const formData = new FormData(form); // Crea un objeto FormData con el formulario
 
-    fetch('http://localhost:3000/api/day-schedule', {
+    fetch('<%= server_url %>/api/day-schedule', {
         method: 'POST',
         body: formData, // Adjunta los datos del formulario incluyendo los archivos
     })
@@ -233,7 +233,7 @@ function submitAddForm() {
 }
 
 function fetchSchedule(){
-    fetch(`http://localhost:3000/api/program-schedules/${id_program}`)
+    fetch(`<%= server_url %>/api/program-schedules/${id_program}`)
         .then(response => response.json())
         .then(data => {
             const tableBody = document.getElementById('schedule-table-body');
@@ -264,7 +264,7 @@ function fetchSchedule(){
 
 function confirmDeleteSchedule(id){
     if (confirm('¿Estás seguro de que deseas eliminar este horario?')) {
-        fetch(`http://localhost:3000/api/delete-PDS/${id}`, {
+        fetch(`<%= server_url %>/api/delete-PDS/${id}`, {
             method: 'DELETE',
         })
         .then(response => {
@@ -293,7 +293,7 @@ function submitUpdateForm(){
     const form = document.getElementById('update-schedule-form');
     const formData = new FormData(form); // Crea un objeto FormData con el formulario
 
-    fetch('http://localhost:3000/api/update-schedule', {
+    fetch('<%= server_url %>/api/update-schedule', {
         method: 'POST',
         body: formData, // Adjunta los datos del formulario 
     })
