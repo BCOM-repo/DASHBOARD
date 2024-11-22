@@ -144,7 +144,7 @@ function submitAddForm() {
     const form = document.getElementById('add-program-form');
     const formData = new FormData(form); // Crea un objeto FormData con el formulario
 
-    fetch('http://localhost:3000/api/programs', {
+    fetch('<%= server_url %>/api/programs', {
         method: 'POST',
         body: formData, // Adjunta los datos del formulario incluyendo los archivos
     })
@@ -169,7 +169,7 @@ function submitUpdateForm() {
     const form = document.getElementById('update-program-form');
     const formData = new FormData(form); // Crea un objeto FormData con el formulario
 
-    fetch('http://localhost:3000/api/update-programs', {
+    fetch('<%= server_url %>/api/update-programs', {
         method: 'POST',
         body: formData, // Adjunta los datos del formulario 
     })
@@ -190,7 +190,7 @@ function submitUpdateForm() {
 
 
 function fetchPrograms() {
-    fetch(`http://localhost:3000/api/programs-channel/${id_Channel}`)
+    fetch(`<%= server_url %>/api/programs-channel/${id_Channel}`)
         .then(response => response.json())
         .then(data => {
             const tableBody = document.getElementById('programs-table-body');
@@ -219,7 +219,7 @@ function fetchPrograms() {
 
 function confirmDeleteProgram(id) {
     if (confirm('¿Estás seguro de que deseas eliminar este canal?')) {
-        fetch(`http://localhost:3000/api/programs/${id}`, {
+        fetch(`<%= server_url %>/api/programs/${id}`, {
             method: 'DELETE',
         })
         .then(response => {
