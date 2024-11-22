@@ -10,6 +10,15 @@ const app = express();
 const bcrypt = require('bcryptjs');
 const saltRounds = 10; // El número de rondas de "salting" (puedes ajustarlo)
 
+// Declara una variable global
+global.server_url = "http://192.168.1.77:3000"; // Cambia esta URL según sea necesario
+
+// Middleware para pasar la variable global a las vistas
+app.use((req, res, next) => {
+  res.locals.server_url = global.server_url; // Define server_url como local para todas las vistas
+  next();
+});
+
 // Static Files
 app.use(express.static(path.join(__dirname, "/static")));
 
@@ -217,7 +226,7 @@ const axios = require('axios');
 app.get("/crud/radio-stations", isAuthenticated, async (req, res) => {
   try {
     // Fetch stations data from the API
-    const response = await axios.get('http://localhost:3000/api/stations');
+    const response = await axios.get(`${global.server_url}/api/stations`);
     const stations = response.data; // Adjust this based on your API's response structure
 
     // Render the template with the stations data
@@ -236,7 +245,7 @@ app.get("/crud/radio-stations", isAuthenticated, async (req, res) => {
 app.get("/crud/banners", isAuthenticated, async (req, res) => {
   try {
     // Fetch stations data from the API
-    const response = await axios.get('http://localhost:3000/api/banners');
+    const response = await axios.get(`${global.server_url}/api/banners`);
     const banners = response.data; // Adjust this based on your API's response structure
 
     // Render the template with the stations data
@@ -257,7 +266,7 @@ app.get("/crud/banners", isAuthenticated, async (req, res) => {
 app.get("/crud/channels", async (req, res) => {
   try {
     // Fetch stations data from the API
-    const response = await axios.get('http://localhost:3000/api/channels');
+    const response = await axios.get(`${global.server_url}/api/channels`);
     const channels = response.data; // Adjust this based on your API's response structure
 
     // Render the template with the stations data
@@ -280,7 +289,7 @@ app.get("/crud/:id/programs/", async (req, res) => {
   try {
     const id_Channel = req.params.id;
     // Fetch programs data from the API using the id_Channel
-    const response = await axios.get(`http://localhost:3000/api/programs-channel/${id_Channel}`);
+    const response = await axios.get(`${global.server_url}/api/programs-channel/${id_Channel}`);
     const programs = response.data; // Ajusta esto según la estructura de la respuesta de tu API
     console.log(id_Channel);
     console.log(response.data);
@@ -303,7 +312,7 @@ app.get("/crud/:id/programs-stations/", async (req, res) => {
   try {
     const id_station = req.params.id;
     // Fetch programs data from the API using the id_Channel
-    const response = await axios.get(`http://localhost:3000/api/programs-stations/${id_station}`);
+    const response = await axios.get(`${global.server_url}/api/programs-stations/${id_station}`);
     const programs = response.data; // Ajusta esto según la estructura de la respuesta de tu API
     console.log(id_station);
     console.log(response.data);
@@ -330,7 +339,7 @@ app.get("/crud/schedules/:id", async (req, res) => {
   try {
     const id_program = req.params.id;
     // Fetch programs data from the API using the id_Channel
-    const response = await axios.get(`http://localhost:3000/api/program-schedules/${id_program}`);
+    const response = await axios.get(`${global.server_url}/api/program-schedules/${id_program}`);
     const schedules = response.data;   //Ajusta esto según la estructura de la respuesta de tu API
     console.log(id_program);        
         // Render the template with the programs data
