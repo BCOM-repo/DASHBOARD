@@ -152,7 +152,7 @@ function loadTableData() {
 }
 
 function fetchChannels() {
-    fetch('http://localhost:3000/api/channels')
+    fetch('<%= server_url %>/api/channels')
         .then(response => response.json())
         .then(data => {
             const tableBody = document.getElementById('channels-table-body');
@@ -197,7 +197,7 @@ function openUpdateDrawer(id) {
 
 function confirmDeleteChannel(id) {
     if (confirm('¿Estás seguro de que deseas eliminar este canal?')) {
-        fetch(`http://localhost:3000/api/channels/${id}`, {
+        fetch(`<%= server_url %>/api/channels/${id}`, {
             method: 'DELETE',
         })
         .then(response => {
@@ -225,7 +225,7 @@ function submitUpdateForm() {
     const form = document.getElementById('update-channel-form');
     const formData = new FormData(form); // Crea un objeto FormData con el formulario
 
-    fetch('http://localhost:3000/api/update-channels', {
+    fetch('<%= server_url %>/api/update-channels', {
         method: 'POST',
         body: formData, // Adjunta los datos del formulario incluyendo los archivos
     })
@@ -247,7 +247,7 @@ function submitAddForm() {
     const form = document.getElementById('add-channel-form');
     const formData = new FormData(form); // Crea un objeto FormData con el formulario
 
-    fetch('http://localhost:3000/api/channels', {
+    fetch('<%= server_url %>/api/channels', {
         method: 'POST',
         body: formData, // Adjunta los datos del formulario incluyendo los archivos
     })
