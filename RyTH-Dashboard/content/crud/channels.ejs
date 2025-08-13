@@ -246,7 +246,11 @@ function submitUpdateForm() {
 function submitAddForm() {
     const form = document.getElementById('add-channel-form');
     const formData = new FormData(form); // Crea un objeto FormData con el formulario
+    const addButton = form.querySelector('button[type="submit"]');
 
+    // Bloquear botón y dar feedback visual
+    addButton.disabled = true;
+    addButton.textContent = "Agregando...";
     fetch('<%= server_url %>/api/channels', {
         method: 'POST',
         body: formData, // Adjunta los datos del formulario incluyendo los archivos
@@ -258,10 +262,14 @@ function submitAddForm() {
         closeAddDrawer(); // Cierra el formulario después de enviar
         loadTableData();
         fetchChannels();
+        addButton.disabled = false;
+        addButton.textContent = "Agregar";
     })
     .catch((error) => {
         console.error('Error:', error);
         // Maneja el error (ej. muestra un mensaje de error)
+        addButton.disabled = false;
+        addButton.textContent = "Agregar";
     });
 
     return false; // Evita el envío predeterminado del formulario
