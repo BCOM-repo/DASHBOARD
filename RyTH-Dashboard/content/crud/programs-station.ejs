@@ -137,30 +137,40 @@ function loadTableData() {
     document.getElementById('next-page').disabled = endIndex >= programs.length;
     document.getElementById('results-count').innerText = `Mostrando ${startIndex + 1}-${Math.min(currentPage * itemsPerPage, programs.length)} de ${programs.length} resultados`;
 }
+
 function submitAddForm() {
     const form = document.getElementById('add-program-form');
-    const formData = new FormData(form); // Crea un objeto FormData con el formulario
+    const formData = new FormData(form);
+    const addButton = form.querySelector('button[type="submit"]');
+
+    // Bloquear el botón y dar feedback visual
+    addButton.disabled = true;
+    addButton.textContent = "Agregando...";
 
     fetch('<%= server_url %>/api/programs-station', {
         method: 'POST',
-        body: formData, // Adjunta los datos del formulario incluyendo los archivos
+        body: formData,
     })
     .then(response => response.json())
     .then(data => {
         console.log('Success:', data);
-        // Maneja la respuesta del servidor (ej. muestra un mensaje de éxito o redirige)
-        closeAddDrawer(); // Cierra el formulario después de enviar
+        closeAddDrawer();
         loadTableData();
         fetchPrograms();
+        form.reset();
+        // Aquí NO reactivamos el botón para evitar doble alta
+        addButton.disabled = false;
+        addButton.textContent = "Agregar";
     })
     .catch((error) => {
         console.error('Error:', error);
-        // Maneja el error (ej. muestra un mensaje de error)
+        // Reactivar solo si hay error
+        addButton.disabled = false;
+        addButton.textContent = "Agregar";
     });
 
-    return false; // Evita el envío predeterminado del formulario
+    return false; // Evita recarga de página
 }
-
 
 function submitUpdateForm() {
     const form = document.getElementById('update-program-form');
@@ -224,14 +234,14 @@ function confirmDeleteProgram(id) {
                 throw new Error('Error al eliminar el programa');
             }
 
-            loadTableData();
             return response.json();
         })
         .then(data => {
             console.log('Canal eliminado:', data);
             // Aquí puedes agregar lógica para actualizar la interfaz, como eliminar la estación de la lista en la página
-            alert('Programa eliminado exitosamente.');
             fetchPrograms();
+            alert('Programa eliminado exitosamente.');
+ 
         })
         .catch(error => {
             console.error('Error:', error);
