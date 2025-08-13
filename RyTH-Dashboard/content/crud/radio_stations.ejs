@@ -196,26 +196,37 @@ function closeAddDrawer() {
 
 function submitAddForm() {
     const form = document.getElementById('add-station-form');
-    const formData = new FormData(form); // Crea un objeto FormData con el formulario
+    const formData = new FormData(form);
+    const addButton = form.querySelector('button[type="submit"]');
+
+    // Bloquear botón y dar feedback visual
+    addButton.disabled = true;
+    addButton.textContent = "Agregando...";
 
     fetch('<%= server_url %>/api/stations', {
         method: 'POST',
-        body: formData, // Adjunta los datos del formulario incluyendo los archivos
+        body: formData,
     })
     .then(response => response.json())
     .then(data => {
         console.log('Success:', data);
-        // Maneja la respuesta del servidor (ej. muestra un mensaje de éxito o redirige)
-        closeAddDrawer(); // Cierra el formulario después de enviar
+        closeAddDrawer();
         loadTableData();
         fetchStations();
+        // Si quieres resetear el formulario después
+        form.reset();
+        // Restaurar botón si lo necesitas
+        addButton.disabled = false;
+        addButton.textContent = "Agregar";
     })
     .catch((error) => {
         console.error('Error:', error);
-        // Maneja el error (ej. muestra un mensaje de error)
+        // Restaurar botón si hay error
+        addButton.disabled = false;
+        addButton.textContent = "Agregar";
     });
 
-    return false; // Evita el envío predeterminado del formulario
+    return false; // Evita recarga de página
 }
 
 
